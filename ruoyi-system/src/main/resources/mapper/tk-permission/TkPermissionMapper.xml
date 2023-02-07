@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TkPermissionMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.TkPermission" id="TkPermissionResult">
+        <result property="shopId"    column="shop_id"    />
+        <result property="username"    column="username"    />
+    </resultMap>
+
+    <sql id="selectTkPermissionVo">
+        select shop_id, username from tk_permission
+    </sql>
+
+    <select id="selectTkPermissionList" parameterType="com.ruoyi.system.domain.TkPermission" resultMap="TkPermissionResult">
+        <include refid="selectTkPermissionVo"/>
+        <where>  
+            <if test="username != null  and username != ''"> and username = #{username}</if>
+            <if test="shopId != null  and shopId != ''"> and shop_Id = #{shopId}</if>
+        </where>
+    </select>
+    
+    <select id="selectTkPermissionByShopId" parameterType="String" resultMap="TkPermissionResult">
+        <include refid="selectTkPermissionVo"/>
+        where shop_id = #{shopId}
+    </select>
+        
+    <insert id="insertTkPermission" parameterType="com.ruoyi.system.domain.TkPermission">
+        insert into tk_permission
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="shopId != null">shop_id,</if>
+            <if test="username != null and username != ''">username,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="shopId != null">#{shopId},</if>
+            <if test="username != null and username != ''">#{username},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTkPermission" parameterType="com.ruoyi.system.domain.TkPermission">
+        update tk_permission
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="username != null and username != ''">username = #{username},</if>
+        </trim>
+        where shop_id = #{shopId}
+    </update>
+
+    <delete id="deleteTkPermissionByShopId" parameterType="String">
+        delete from tk_permission where shop_id = #{shopId}
+    </delete>
+
+    <delete id="deleteTkPermissionByShopIds" parameterType="String">
+        delete from tk_permission where shop_id in 
+        <foreach item="shopId" collection="array" open="(" separator="," close=")">
+            #{shopId}
+        </foreach>
+    </delete>
+</mapper>
